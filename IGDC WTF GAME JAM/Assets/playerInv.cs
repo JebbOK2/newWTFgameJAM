@@ -9,6 +9,7 @@ public class playerInv : MonoBehaviour
     public List<itemType> invlist;
     public int selecteditem;
     public float playerReach;
+    [SerializeField] GameObject throwItemGO;
 
     [Space(20)]
     [Header("Keys")]
@@ -27,7 +28,8 @@ public class playerInv : MonoBehaviour
     [SerializeField] GameObject sword_prefab;
     [SerializeField] GameObject axe_prefab;
 
-    private Dictionary<itemType, GameObject> itemSetActive = new Dictionary<itemType, GameObject>();
+    private Dictionary<itemType, GameObject> itemSetActive = new Dictionary<itemType, GameObject>() { };
+    private Dictionary<itemType, GameObject> itemInstantiate = new Dictionary<itemType, GameObject>() { };
 
     // Start is called before the first frame update
     void Start()
@@ -35,6 +37,9 @@ public class playerInv : MonoBehaviour
         selecteditem = 0;
         itemSetActive.Add(itemType.Sword, Sworditem);
         itemSetActive.Add(itemType.Axe, Axeitem);
+
+        itemInstantiate.Add(itemType.Sword, sword_prefab);
+        itemInstantiate.Add(itemType.Axe, axe_prefab);
     }
 
     // Update is called once per frame
@@ -51,6 +56,18 @@ public class playerInv : MonoBehaviour
                 invlist.Add(hitInfo.collider.GetComponent<itemPickable>().itemScriptable.item_type);
                 item.PickItem(); //just destroy from item pick script
             }
+        }
+        if (Input.GetKeyDown(throwItemKey) && invlist.Count > 1)
+        {
+            Instantiate(itemInstantiate[invlist[selecteditem]], position: throwItemGO.transform.position, new Quaternion());
+            if (selecteditem != 0)
+            {
+                selecteditem -= 1;
+            }
+
+        }
+        {
+            
         }
         if (Input.GetKeyDown(KeyCode.Alpha1) && invlist.Count > 0)
         {
